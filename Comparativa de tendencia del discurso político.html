@@ -59,8 +59,8 @@ fill:#555;
         <div id="cand" ><h3>Candidatos</h3></div>
         <input type="date" id="start" name="trip-start" value="2021-01-01" min="2020-05-01" max="2021-12-31">
     </div> 
-<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script>
 var store=[];
 var indexCat = [];
@@ -85,7 +85,7 @@ var output = document.getElementById("demo");
 // SETTING UP THE FORCE LAYOUT
     
       
-d3.csv("ValoracionCuantitativo.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
+d3.csv("llj.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
 
 function createNetwork(edgelist) {
   var nodeHash = {};
