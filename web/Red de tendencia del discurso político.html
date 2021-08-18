@@ -93,7 +93,7 @@
       //Want to have different labels
       // SETTING UP THE FORCE LAYOUT
 
-      d3.csv("llj2.csv", function (error, data) {
+      d3.csv("llj.csv", function (error, data) {
         store = data;
         createNetwork(data);
       }); //Cargamos nuestro archivo de datos y ejecutamos la función create network
@@ -249,9 +249,9 @@
           .style("fill", function (d) {
             if (d.cnd === null) {
               return color(d.group);
-            } else if (d.cnd === "duque") {
+            } else if (d.cnd === "lasso") {
               return "#CC33CC";
-            } else if (d.cnd === "petro") {
+            } else if (d.cnd === "arauz") {
               return "	#00CC99";
             }
           })
