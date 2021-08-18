@@ -61,7 +61,7 @@
             <div class="slidecontainer">
                 <h3>Indice de similitud</h3>
                 <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
-                <p>Value: <span id="demo"></span></p>
+                <p>SIM: <span id="demo"></span></p>
             </div>
             <div id="cand" >
                 <h3>Fecha de comparación</h3>
@@ -210,11 +210,11 @@ var link = svg.selectAll(".link")
     }
     
     edges.forEach(function(edge){
-        edge.source.x = 700;
+        edge.source.x = 750;
         if(edge.target.date <= fechaInput){
-            edge.target.x = edge.target.sim*500+200;
+            edge.target.x = edge.target.sim*700+50;
         }else if(edge.target.date > fechaInput){
-            edge.target.x = 1200-edge.target.sim*500;
+            edge.target.x = 1450-edge.target.sim*700;
         }
     });
       
