@@ -54,19 +54,22 @@
 </head
 <body>
     <h2>COMPARATIVA DE TENDENCIA DEL DISCURSO POLÍTICO</h2>
-    <div id="main3" style="float: left">
-    <div class="slidecontainer">
-        <h3>Indice de similitud</h3>
-        <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
-        <p>Value: <span id="demo"></span></p>
-    </div>
-    <div>
-        <div id="cat" ><h3>Categorias</h3></div>
-        <div id="cand" ><h3>Candidatos</h3></div>
-        <div id="cand" ><h3>Fecha</h3>
-            <input type="date" id="start" name="trip-start" value="2021-01-01" min="2020-05-01" max="2021-12-31" onchange="updateNetwork()">
-        </div>
-    </div> 
+    <aside style = "float: left">
+        <div>
+            <div id="cat" ><h3>Categorias</h3></div>
+            <div id="cand" ><h3>Candidatos</h3></div>
+            <div class="slidecontainer">
+                <h3>Indice de similitud</h3>
+                <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
+                <p>Value: <span id="demo"></span></p>
+            </div>
+            <div id="cand" >
+                <h3>Fecha de comparación</h3>
+                <input type="date" id="start" name="trip-start" value="2021-01-01" min="2020-05-01" max="2021-12-31" onchange="updateNetwork()">
+            </div>
+        </div> 
+    </aside>
+    <div id="main3" class="main3" style="float: left">
 <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script>
