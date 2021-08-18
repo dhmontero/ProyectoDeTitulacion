@@ -84,7 +84,7 @@ var output = document.getElementById("demo");
 // SETTING UP THE FORCE LAYOUT
     
       
-d3.csv("ValoracionCuantitativo.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
+d3.csv("llj.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
 
 function createNetwork(edgelist) {
   var nodeHash = {};
