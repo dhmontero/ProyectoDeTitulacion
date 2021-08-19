@@ -125,12 +125,18 @@ article{
 	border-radius: 20px;
 }
 #tab2{
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.979)), url("/assets/img/backTabs.jpg");
+    background-size: cover;
 	height:1990px;
 }
 #tab3{
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.979)), url("/assets/img/backTabs.jpg");
+    background-size: cover;
 	height:2180px;
 }
 #tab4{
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.979)), url("/assets/img/backTabs.jpg");
+    background-size: cover;
 	height:2050px;
 }
 @media screen and (max-width: 700px){
