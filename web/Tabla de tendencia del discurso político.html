@@ -67,6 +67,7 @@
         let candidatos = [];
         let categorias = [];
         let actCheck = 0;
+        let lenghtCND = 0;
            
         var slider = document.getElementById("myRange");
         var output = document.getElementById("demo");
@@ -186,16 +187,17 @@
           }           
           
           function dibujarTabla(dataPalabras){
-              
+              var numCND = 0;
+              numCND = candidatos.length - lenghtCND;
+        
               const $cuerpoTabla = document.querySelector("#cuerpoTabla");
-              
               dataPalabras.forEach(pal => {
                   const $tr = document.createElement("tr");
                     // Creamos el <td> de nombre y lo adjuntamos a tr
                     let $tdCategoria = document.createElement("td");
-                    if(dataPalabras.indexOf(pal) % 2 == 0){
+                    if(dataPalabras.indexOf(pal) % numCND == 0){
                     $tdCategoria.textContent = pal.Categoria; // el textContent del td es el nombre
-                    $tdCategoria.rowSpan = 2;
+                    $tdCategoria.rowSpan = numCND;
                     $tr.appendChild($tdCategoria);
                     }
                     // El td de precio
@@ -205,10 +207,8 @@
                     $tr.appendChild($tdCand);
                     // El td del código
                     var aux = pal.Sim.length;
-                    console.log(aux);
                     for (var i=pal.Palabras.length-1;i>=0;i--){
                             let $tdPalabras = document.createElement("td");
-                            console.log(parseFloat(pal.Sim[aux-1]));
                             var tam = parseFloat(pal.Sim[aux-1])*35
                             $tdPalabras.style.fontSize = tam;
                             $tdPalabras.textContent = pal.Palabras[i];
@@ -256,14 +256,14 @@
               var indexCat = [];
               var indexCand = [];
               for(aux = 0;aux < categorias.length;aux++){   
-                 var isChecked = document.getElementById('check'+aux+'').checked;
+                 var isChecked = document.getElementById("check"+aux+"").checked;
                     if(isChecked != true){
                         indexCat[aux1] = categorias[aux].NomCat;
-                        aux1=aux1+1;;
+                        aux1=aux1+1;
                     }
                 }
               for(aux2 = 0;aux2 < candidatos.length;aux2++){   
-                 var isChecked2 = document.getElementById('checkC'+aux2+'').checked;
+                 var isChecked2 = document.getElementById("checkC"+aux2+"").checked;
                     if(isChecked2 != true){
                         indexCand[aux3] = candidatos[aux2].NomCand;
                         aux3=aux3+1;
@@ -278,6 +278,8 @@
                var newCandidatos=_.cloneDeep(candidatos)
                var newPalabras=_.cloneDeep(dataPalabras);
               
+               lenghtCND = indicesCandidatos.length;
+               
               indicesCandidatos.forEach(function(el){
                     newPalabras.forEach(elemento => {
                         if(el == elemento.Candidato){
@@ -293,10 +295,14 @@
                             newPalabras.splice(temp,2); //Elimina dos elementos despues del indice especificado
                         }
                     })
-                })
-               console.log(newPalabras)       
+                })      
                var Table = document.getElementById("cuerpoTabla"); 
                Table.innerHTML = "";
+               if(lenghtCND == candidatos.length){
+                  for (let i = newPalabras.length; i > 0; i--) {
+                      newPalabras.pop();
+                  }
+               }
                dibujarTabla(newPalabras);
             }
 
