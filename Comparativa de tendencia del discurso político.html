@@ -1,64 +1,75 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
+<head>
+    <link rel="stylesheet" href="tabla.css"> 
+    <style>
+        body {
+              font-family:Arial, Helvetica, sans-serif;
+              overflow: hidden
+          }
+        .link {
+          stroke: #aaa;
+        }
 
-.link {
-  stroke: #aaa;
-}
+        .node text {
+        stroke:#333;
+        cursor:pointer;
+        }
 
-.node text {
-stroke:#333;
-cursor:pointer;
-}
+        .node circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+        fill:#555;
+        }
 
-.node circle {
-stroke: #fff;
-stroke-width: 1.5px;
-fill:#555;
-}
+        .d3-tip {
+          line-height: 1;
+          font-weight: bold;
+          padding: 14px;
+          background: rgba(0, 0, 0, 0.8);
+          color: #fff;
+          border-radius: 2px;
+        }
 
-.d3-tip {
-  line-height: 1;
-  font-weight: bold;
-  padding: 14px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 2px;
-}
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+          box-sizing: border-box;
+          display: inline;
+          font-size: 14px;
+          width: 100%;
+          line-height: 1;
+          color: rgba(0, 0, 0, 0.8);
+          content: "\25BC";
+          position: absolute;
+          text-align: center;
+        }
 
-/* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 14px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
-}
-
-/* Style northward tooltips differently */
-.d3-tip.n:after {
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
-}
-    
-</style>
+        /* Style northward tooltips differently */
+        .d3-tip.n:after {
+          margin: -1px 0 0 0;
+          top: 100%;
+          left: 0;
+        }
+    </style>
+</head
 <body>
-    <h2>DIAGRAMA DE RED</h2>
-    <div id="main3" style="float: left">
-    <div class="slidecontainer">
-        <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
-        <p>Value: <span id="demo"></span></p>
-    </div>
-    <div>
-        <div id="cat" ><h3>Categorias</h3></div>
-        <div id="cand" ><h3>Candidatos</h3></div>
-        <input type="date" id="start" name="trip-start" value="2021-01-01" min="2020-05-01" max="2021-12-31">
-    </div> 
+    <h2>COMPARATIVA DE TENDENCIA DEL DISCURSO POLÍTICO</h2>
+    <aside style = "float: left">
+        <div>
+            <div id="cat" ><h3>Categorias</h3></div>
+            <div id="cand" ><h3>Candidatos</h3></div>
+            <div class="slidecontainer">
+                <h3>Indice de similitud</h3>
+                <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
+                <p>SIM: <span id="demo"></span></p>
+            </div>
+            <div id="cand" >
+                <h3>Fecha de comparación</h3>
+                <input type="date" id="start" name="trip-start" value="2021-01-01" min="2020-05-01" max="2021-12-31" onchange="updateNetwork()">
+            </div>
+        </div> 
+    </aside>
+    <div id="main3" class="main3" style="float: left">
 <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script>
@@ -85,7 +96,7 @@ var output = document.getElementById("demo");
 // SETTING UP THE FORCE LAYOUT
     
       
-d3.csv("llj.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
+d3.csv("llj2.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
 
 function createNetwork(edgelist) {
   var nodeHash = {};
@@ -95,6 +106,7 @@ function createNetwork(edgelist) {
   var categorias = [];
   var aux = 0;
   var aux2 = 0;
+  var fechaInput = new Date();
 
   var tip = d3.tip()
   .attr('class', 'd3-tip')
@@ -138,7 +150,7 @@ function createNetwork(edgelist) {
 
   edgelist.forEach(function (edge) { //Funcion que selecciona del archivo los nodos secundarias (palabras) y los guarda en un archivo especifico
     if(!(nodes.some(node => (node.label === edge.word && node.cnd === edge.candidato))) && edge.sim > slider.value && !(indexCat.includes(edge.categoria))&& !(indexCand.includes(edge.candidato))){ //verifica que no se repita la palabra
-        nodeHash[aux] = {id: String(aux + 1), label: edge.word, group: 1, cnd: edge.candidato};
+        nodeHash[aux] = {id: String(aux + 1), label: edge.word, group: 1, cnd: edge.candidato, date: edge.fecha, sim: edge.sim};
         nodes[aux] = nodeHash[aux];
         aux++;        
     }
@@ -156,7 +168,10 @@ function createNetwork(edgelist) {
     force.nodes(nodes).links(edges).start();
     console.log(edges);
     console.log(nodes);
-
+    console.log(fechaInput);
+    fechaInput = start.value;
+    console.log(fechaInput);
+    
 var link = svg.selectAll(".link")
     .data(edges) //Asignacion de la data para cada enlace 
     .enter().append("line") //Por cada enlace se genera una linea
@@ -172,7 +187,7 @@ var link = svg.selectAll(".link")
  
   node.append("circle") //Caracteristicas de los nodos
       .attr("r", function(d) { return String(d.group*10); })
-      .style("fill", function(d) { if(d.cnd === null){return color(d.group);} else if (d.cnd === "duque"){return "#CC33CC"}else if (d.cnd === "petro"){return "	#00CC99"}  })
+      .style("fill", function(d) { if(d.cnd === null){return color(d.group);} else if (d.cnd === "arauz"){return "#CC33CC"}else if (d.cnd === "lasso"){return "	#00CC99"}  })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide);
 
@@ -195,11 +210,11 @@ var link = svg.selectAll(".link")
     }
     
     edges.forEach(function(edge){
-        edge.source.x = 500;
-        if(edge.target.cnd == "duque"){
-            edge.target.x = 200;
-        }else if(edge.target.cnd == "petro"){
-            edge.target.x = 800;
+        edge.source.x = 750;
+        if(edge.target.date <= fechaInput){
+            edge.target.x = edge.target.sim*700+50;
+        }else if(edge.target.date > fechaInput){
+            edge.target.x = 1450-edge.target.sim*700;
         }
     });
       
@@ -329,4 +344,6 @@ function isCheck(){
 }
     
     
-</script>
+    </script>
+</div>
+</body>
