@@ -135,7 +135,14 @@
             return result;
         }
         
-		
+        function ordenar(palabras,sim,orden){
+            var newOrden = [];
+            orden.forEach(function(el){
+                var index = sim.indexOf(el);
+                newOrden.push(palabras[index]);
+            })
+            return newOrden;
+        }
           
         function getPalabras(){
             let dataTotal = store.dat;
@@ -152,6 +159,7 @@
                   candidatos.forEach(cndd =>{
                       let result5 = [];
                       let result6 = [];
+                      let result7 = [];
                       let aux = 0;
                       let result2 = dataTotal.reduce((result,d) => {
                           if(d.categoria == ctg.NomCat && d.candidato == cndd.NomCand){
@@ -160,6 +168,7 @@
                                 let temp2 = d.sim
                                 result5[aux] = temp;
                                 result6[aux] = temp2;
+                                result7[aux] = temp2;
                                 aux = aux + 1 ;
                                 }
                             }
@@ -168,7 +177,9 @@
                         aux=0;
                       result2 = Object.keys(result2).map(key => result2[key])
                       result6 = Object.keys(result6).map(key => result6[key])
-                      let temp1 = {"Categoria": ctg.NomCat , "Candidato": cndd.NomCand, "Palabras": result2, "Sim": result6 };
+                      result7 = result7.sort(function(a, b){return a - b});
+                      result2 = ordenar(result2,result6,result7);
+                      let temp1 = {"Categoria": ctg.NomCat , "Candidato": cndd.NomCand, "Palabras": result2, "Sim": result6, "Orden": result7 };
                       palabras.push(temp1);
                   })        
               })
@@ -197,10 +208,10 @@
                     var aux = pal.Sim.length;
                     for (var i=pal.Palabras.length-1;i>=0;i--){                 // Se recorre el arreglo de palabras
                             let $tdPalabras = document.createElement("td");     // pertenecientes a la categoría y candidato
-                            var tam = parseFloat(pal.Sim[aux-1])*35             // del actual elemento del arreglo
+                            var tam = parseFloat(pal.Orden[aux-1])*35             // del actual elemento del arreglo
                             $tdPalabras.style.fontSize = tam;                   // Se setea el tamaño de la palabra acorde a la SIM de la misma.
                             $tdPalabras.textContent = pal.Palabras[i];
-                            $tdPalabras.title = "Sim: " +pal.Sim[aux-1]
+                            $tdPalabras.title = "Sim: " +pal.Orden[aux-1]
                             aux--;
                             $tr.appendChild($tdPalabras);                       // Se va asignando la celdas de palabras a la fila actual.
                     }
