@@ -141,7 +141,9 @@ function createNetwork(edgelist) {
   isNew = 1;
 
   edgelist.forEach(function (edge) { //Funcion que selecciona del archivo los nodos principales (categorias) y los guarda en un archivo especifico
-    if ((!(nodeHash[0]) || !(nodeHash[aux-1].label == edge.categoria.toUpperCase())) && !(indexCat.includes(edge.categoria)) && !(indexCand.includes(edge.candidato))) { //verifica que no se repita la categoria
+    if (!nodes.some(
+              (node) => node.label === edge.categoria.toUpperCase() 
+            ) && !(indexCat.includes(edge.categoria)) && !(indexCand.includes(edge.candidato))) { //verifica que no se repita la categoria
         nodeHash[aux] = {id: String(aux + 1), label: edge.categoria.toUpperCase(), group: 2, cnd: null};
         nodes[aux] = nodeHash[aux];
         aux++;
@@ -185,11 +187,28 @@ var link = svg.selectAll(".link")
       .attr("class", "node") //Se setean las caracteristicas de .node
       .call(force.drag);
  
-  node.append("circle") //Caracteristicas de los nodos
-      .attr("r", function(d) { return String(d.group*10); })
-      .style("fill", function(d) { if(d.cnd === null){return color(d.group);} else if (d.cnd === "arauz"){return "#CC33CC"}else if (d.cnd === "lasso"){return "	#00CC99"}  })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide);
+        node
+          .append("circle") //Caracteristicas de los nodos
+          .attr("r", function (d) {
+            return String(d.group * 10);
+          })
+          .style("fill", function (d) {
+            if (d.cnd === null) {
+              return color(d.group);
+            } else if (d.cnd === "lasso") {
+              return "#CC33CC";
+            } else if (d.cnd === "arauz") {
+              return "	#1C542D";
+            } else if (d.cnd === "perez") {
+              return "	#00BB2D";
+            } else if (d.cnd === "hervas") {
+              return "	#FF8000";
+            } else if (d.cnd === "freile") {
+              return "	#D5303E";
+            }
+          })
+          .on("mouseover", tip.show)
+          .on("mouseout", tip.hide);
 
   node.append("text") //Caractersiticas del texto de los nodos
       .attr("dx", 20) //Ubicación respecto al nodo en X
@@ -229,26 +248,38 @@ var link = svg.selectAll(".link")
     
 function updateNetwork(){
     d3.select("svg").remove();
-    d3.csv("ValoracionCuantitativo.csv",function(error,data) {createNetwork(store)});
+    d3.csv("llj2.csv",function(error,data) {createNetwork(store)});
 }
 
+function dataRepetidaCand(elementos, nombre) {
+    return elementos.filter(
+        function(elementos){ return elementos.NomCand == nombre }
+    );
+}
+        
+function dataRepetidaCat(elementos, nombre) {
+    return elementos.filter(
+        function(elementos){ return elementos.NomCat == nombre }
+    );
+} 
+
 function obtCand(datos){
-    var aux=0;
-    var result = datos.reduce((result,d) => {
-        let temp = {"IdCand": aux + 1 , "NomCand": d.candidato};
-        if ( result[aux] == undefined || result[aux].NomCand == d.candidato){
-            result[aux] = temp;
-        }
-        else if (result[aux].NomCand!= d.candidato)
-        {
-            aux = aux + 1;
-            result[aux] = temp;
-        }
-        return result;  
-    },{});
-    result = Object.keys(result).map(key => result[key])
-    result = sinRep(result);
-    candidatos = result;
+        var aux=0;
+            var result = datos.reduce((result,d) => {
+                result = Object.keys(result).map(key => result[key])
+                if(result != undefined){
+                   var checkRep = dataRepetidaCand(result, d.candidato);
+                    if(checkRep.length == 0){
+                        var temp = {"IdCand": aux + 1, "NomCand": d.candidato};
+                        result.push(temp);
+                        aux = aux + 1;
+                    }
+                }
+                return result;  
+            },{});
+        result = Object.keys(result).map((key) => result[key]);
+        //result = sinRep(result);
+        candidatos = result;
     if(isNew == 0){
         checkBCandidatos(candidatos);  
     }
@@ -256,19 +287,20 @@ function obtCand(datos){
 }
 
 function obtCat(datos){
-    var aux=0;
-    var result =[]
-    result = datos.reduce((result,d) => {
-        var temp = {"CatID": aux + 1, "NomCat": d.categoria};
-        if ( result[aux] == undefined || result[aux].NomCat == d.categoria)
-            result[aux] = temp;
-        else if (result[aux].NomCat != d.categoria)
-           aux = aux + 1;
-            result[aux] = temp;
-        result = Object.keys(result).map(key => result[key])
-        return result;
-    },{});
-    categorias = result;
+        var aux=0;
+            var result = datos.reduce((result,d) => {
+                result = Object.keys(result).map(key => result[key])
+                if(result != undefined){
+                   var checkRep = dataRepetidaCat(result, d.categoria);
+                    if(checkRep.length == 0){
+                        var temp = {"CatID": aux + 1, "NomCat": d.categoria};
+                        result.push(temp);
+                        aux = aux + 1;
+                    }
+                }
+                return result;  
+            },{});
+        categorias = result;
     if(isNew == 0){
          checkBCategorias(categorias);   
     }

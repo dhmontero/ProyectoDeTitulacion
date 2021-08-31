@@ -220,7 +220,7 @@
               var aux = 0
               cat.forEach(elemento => {
                 var node = document.createElement('div');        
-                node.innerHTML = '<input type="checkbox" id="check'+aux+'" checked="" onclick="isCheck()"><label for="check'+aux+'">'+elemento.NomCat+'</label><br>'; 
+                node.innerHTML = '<input type="checkbox" id="check'+aux+'" checked="" onclick="isCheck()"><label for="check'+aux+'">'+elemento.NomCat.toUpperCase()+'</label><br>'; 
                 document.getElementById('cat').appendChild(node);
                 aux=aux+1;
               })
@@ -230,7 +230,7 @@
               var aux = 0
               cand.forEach(elemento => {
                 var node = document.createElement('div');        
-                node.innerHTML = '<input type="checkbox" id="checkC'+aux+'" checked="" onclick="isCheck()"><label for="checkC'+aux+'">'+elemento.NomCand+'</label><br>'; 
+                node.innerHTML = '<input type="checkbox" id="checkC'+aux+'" checked="" onclick="isCheck()"><label for="checkC'+aux+'">'+elemento.NomCand.toUpperCase()+'</label><br>'; 
                 document.getElementById('cand').appendChild(node);
                 aux=aux+1;
               })
