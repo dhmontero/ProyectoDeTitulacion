@@ -119,8 +119,8 @@
           .offset([-10, 0])
           .html(function (d) {
             return (
-              "<strong>Candidato:</strong> <span style='color:yellow'>" +
-              d.cnd +
+              "<strong>Candidato:</strong> <span style='color:pink'>" +
+              d.cnd.toUpperCase() +
               "</span>"
             );
           });
@@ -161,8 +161,9 @@
         edgelist.forEach(function (edge) {
           //Funcion que selecciona del archivo los nodos principales (categorias) y los guarda en un archivo especifico
           if (
-            (!nodeHash[0] ||
-              !(nodeHash[aux - 1].label == edge.categoria.toUpperCase())) &&
+           !nodes.some(
+              (node) => node.label === edge.categoria.toUpperCase() 
+            ) &&
             !indexCat.includes(edge.categoria) &&
             !indexCand.includes(edge.candidato)
           ) {
@@ -258,7 +259,13 @@
             } else if (d.cnd === "lasso") {
               return "#CC33CC";
             } else if (d.cnd === "arauz") {
-              return "	#00CC99";
+              return "	#1C542D";
+            } else if (d.cnd === "perez") {
+              return "	#00BB2D";
+            } else if (d.cnd === "hervas") {
+              return "	#FF8000";
+            } else if (d.cnd === "freile") {
+              return "	#D5303E";
             }
           })
           .on("mouseover", tip.show)
@@ -311,21 +318,33 @@
           createNetwork(store);
         });
       }
-
+        function dataRepetidaCand(elementos, nombre) {
+            return elementos.filter(
+                function(elementos){ return elementos.NomCand == nombre }
+            );
+        }
+        
+        function dataRepetidaCat(elementos, nombre) {
+            return elementos.filter(
+                function(elementos){ return elementos.NomCat == nombre }
+            );
+        }    
       function obtCand(datos) {
-        var aux = 0;
-        var result = datos.reduce((result, d) => {
-          let temp = { IdCand: aux + 1, NomCand: d.candidato };
-          if (result[aux] == undefined || result[aux].NomCand == d.candidato) {
-            result[aux] = temp;
-          } else if (result[aux].NomCand != d.candidato) {
-            aux = aux + 1;
-            result[aux] = temp;
-          }
-          return result;
-        }, {});
+        var aux=0;
+            var result = datos.reduce((result,d) => {
+                result = Object.keys(result).map(key => result[key])
+                if(result != undefined){
+                   var checkRep = dataRepetidaCand(result, d.candidato);
+                    if(checkRep.length == 0){
+                        var temp = {"IdCand": aux + 1, "NomCand": d.candidato};
+                        result.push(temp);
+                        aux = aux + 1;
+                    }
+                }
+                return result;  
+            },{});
         result = Object.keys(result).map((key) => result[key]);
-        result = sinRep(result);
+        //result = sinRep(result);
         candidatos = result;
         if (isNew == 0) {
           checkBCandidatos(candidatos);
@@ -334,17 +353,19 @@
       }
 
       function obtCat(datos) {
-        var aux = 0;
-        var result = [];
-        result = datos.reduce((result, d) => {
-          var temp = { CatID: aux + 1, NomCat: d.categoria };
-          if (result[aux] == undefined || result[aux].NomCat == d.categoria)
-            result[aux] = temp;
-          else if (result[aux].NomCat != d.categoria) aux = aux + 1;
-          result[aux] = temp;
-          result = Object.keys(result).map((key) => result[key]);
-          return result;
-        }, {});
+        var aux=0;
+            var result = datos.reduce((result,d) => {
+                result = Object.keys(result).map(key => result[key])
+                if(result != undefined){
+                   var checkRep = dataRepetidaCat(result, d.categoria);
+                    if(checkRep.length == 0){
+                        var temp = {"CatID": aux + 1, "NomCat": d.categoria};
+                        result.push(temp);
+                        aux = aux + 1;
+                    }
+                }
+                return result;  
+            },{});
         categorias = result;
         if (isNew == 0) {
           checkBCategorias(categorias);
@@ -362,7 +383,7 @@
             '" checked="" onclick="isCheck()"><label for="checkC' +
             aux +
             '">' +
-            elemento.NomCand +
+            elemento.NomCand.toUpperCase() +
             "</label><br>";
           document.getElementById("cand").appendChild(node);
           aux = aux + 1;
@@ -379,7 +400,7 @@
             '" checked="" onclick="isCheck()"><label for="check' +
             aux +
             '">' +
-            elemento.NomCat +
+            elemento.NomCat.toUpperCase() +
             "</label><br>";
           document.getElementById("cat").appendChild(node);
           aux = aux + 1;

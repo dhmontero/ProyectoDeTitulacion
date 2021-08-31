@@ -78,25 +78,38 @@
         
         function loadData(){
             return Promise.all([
-                d3.csv("llj.csv")
+                d3.csv("llj2.csv")
             ]).then(datasets => {
                 store.dat = datasets[0];
                 return store;
             })
         }
+           
+        function dataRepetidaCand(elementos, nombre) {
+            return elementos.filter(
+                function(elementos){ return elementos.NomCand == nombre }
+            );
+        }
+        
+        function dataRepetidaCat(elementos, nombre) {
+            return elementos.filter(
+                function(elementos){ return elementos.NomCat == nombre }
+            );
+        }
           
         function obtCat(datos){
             var aux=0;
-            var result =[]
-            result = datos.reduce((result,d) => {
-                var temp = {"CatID": aux + 1, "NomCat": d.categoria};
-                if ( result[aux] == undefined || result[aux].NomCat == d.categoria)
-                    result[aux] = temp;
-                else if (result[aux].NomCat != d.categoria)
-                   aux = aux + 1;
-                    result[aux] = temp;
+            var result = datos.reduce((result,d) => {
                 result = Object.keys(result).map(key => result[key])
-                return result;
+                if(result != undefined){
+                   var checkRep = dataRepetidaCat(result, d.categoria);
+                    if(checkRep.length == 0){
+                        var temp = {"CatID": aux + 1, "NomCat": d.categoria};
+                        result.push(temp);
+                        aux = aux + 1;
+                    }
+                }
+                return result;  
             },{});
             categorias = result;
             return result;
@@ -105,45 +118,24 @@
         function obtCand(datos){
             var aux=0;
             var result = datos.reduce((result,d) => {
-                let temp = {"IdCand": aux + 1 , "NomCand": d.candidato};
-                if ( result[aux] == undefined || result[aux].NomCand == d.candidato){
-                    result[aux] = temp;
-                }
-                else if (result[aux].NomCand!= d.candidato)
-                    {
+                result = Object.keys(result).map(key => result[key])
+                if(result != undefined){
+                   var checkRep = dataRepetidaCand(result, d.candidato);
+                    if(checkRep.length == 0){
+                        var temp = {"IdCand": aux + 1, "NomCand": d.candidato};
+                        result.push(temp);
                         aux = aux + 1;
-                        result[aux] = temp;
                     }
+                }
                 return result;  
             },{});
             result = Object.keys(result).map(key => result[key])
-            result = sinRep(result);
+            //result = sinRep(result);
             candidatos = result;
             return result;
         }
         
-        function sinRep(result){
-              let aux = 0;
-              let result1 = [];
-              result.forEach(element => {
-                if(result1.length == 0){
-                    result1.push(element);
-                }
-                else if (result1.length > 0){
-                    result1.forEach(el => {
-                        if(el.NomCand == element.NomCand){
-                           aux = 1;
-                        }
-                    }
-                    )
-                    if(aux != 1){
-                        result1.push(element);
-                        aux = 0;
-                    }
-                }
-              })
-              return result1;
-          }
+		
           
         function getPalabras(){
             let dataTotal = store.dat;
@@ -191,30 +183,26 @@
               numCND = candidatos.length - lenghtCND;
         
               const $cuerpoTabla = document.querySelector("#cuerpoTabla");
-              dataPalabras.forEach(pal => {
-                  const $tr = document.createElement("tr");
-                    // Creamos el <td> de nombre y lo adjuntamos a tr
-                    let $tdCategoria = document.createElement("td");
-                    if(dataPalabras.indexOf(pal) % numCND == 0){
-                    $tdCategoria.textContent = pal.Categoria; // el textContent del td es el nombre
+              dataPalabras.forEach(pal => {                         // Se recorre el arreglo de palabras basadas en candidatos y categorías
+                  const $tr = document.createElement("tr");         // Se crea una fila por registro  
+                    let $tdCategoria = document.createElement("td");// Se crea una celda destinada a la categoría. 
+                    if(dataPalabras.indexOf(pal) % numCND == 0){    // Combinar celdas acorde a la cantidad de candidatos 
+                    $tdCategoria.textContent = pal.Categoria;       // escogidos.
                     $tdCategoria.rowSpan = numCND;
                     $tr.appendChild($tdCategoria);
                     }
-                    // El td de precio
-                  
-                    let $tdCand = document.createElement("td");
+                    let $tdCand = document.createElement("td");     // Se crea una celda para el candidato del registro.
                     $tdCand.textContent = pal.Candidato;
                     $tr.appendChild($tdCand);
-                    // El td del código
                     var aux = pal.Sim.length;
-                    for (var i=pal.Palabras.length-1;i>=0;i--){
-                            let $tdPalabras = document.createElement("td");
-                            var tam = parseFloat(pal.Sim[aux-1])*35
-                            $tdPalabras.style.fontSize = tam;
+                    for (var i=pal.Palabras.length-1;i>=0;i--){                 // Se recorre el arreglo de palabras
+                            let $tdPalabras = document.createElement("td");     // pertenecientes a la categoría y candidato
+                            var tam = parseFloat(pal.Sim[aux-1])*35             // del actual elemento del arreglo
+                            $tdPalabras.style.fontSize = tam;                   // Se setea el tamaño de la palabra acorde a la SIM de la misma.
                             $tdPalabras.textContent = pal.Palabras[i];
                             $tdPalabras.title = "Sim: " +pal.Sim[aux-1]
                             aux--;
-                            $tr.appendChild($tdPalabras);
+                            $tr.appendChild($tdPalabras);                       // Se va asignando la celdas de palabras a la fila actual.
                     }
                     // Finalmente agregamos el <tr> al cuerpo de la tabla
                     $cuerpoTabla.appendChild($tr);
@@ -222,7 +210,7 @@
               })
           }
            
-           function actTabla(){
+           function actTabla(){ //Función que permite
                var Table = document.getElementById("cuerpoTabla"); 
                Table.innerHTML = "";
                getPalabras();
@@ -292,7 +280,7 @@
                     newPalabras.forEach(elemento => {
                         if(el == elemento.Categoria){
                             var temp = newPalabras.indexOf(elemento);
-                            newPalabras.splice(temp,2); //Elimina dos elementos despues del indice especificado
+                            newPalabras.splice(temp,candidatos.length); //Elimina dos elementos despues del indice especificado
                         }
                     })
                 })      
