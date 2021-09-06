@@ -150,9 +150,12 @@
         var force = d3.layout
           .force()
           .gravity(0.08) //atracción entre nodos principales
-          .distance(100) //separacion nodos principales - nodos de borde
           .charge(-500) //separación entre nodos de borde
           .size([width, height]); // tamaño del gráfico
+
+        force.linkDistance(function(link) {
+          return 200-(parseFloat(link.weight)*20);
+        });
 
         obtCand(store);
         obtCat(store);
@@ -228,7 +231,7 @@
         });
 
         force.nodes(nodes).links(edges).start();
-        console.log(edges);
+
         var link = svg
           .selectAll(".link")
           .data(edges) //Asignacion de la data para cada enlace
@@ -236,7 +239,7 @@
           .append("line") //Por cada enlace se genera una linea
           .attr("class", "link") //Se setean las caracteristica de .link
           .style("stroke-width", function (d) {
-            return Math.sqrt(d.weight);
+            return d.weight/5;
           });
 
         // Create the node circles.
@@ -293,18 +296,10 @@
             k = k + 10;
           }
           link
-            .attr("x1", function (d) {
-              return d.source.x;
-            })
-            .attr("y1", function (d) {
-              return d.source.y;
-            })
-            .attr("x2", function (d) {
-              return d.target.x;
-            })
-            .attr("y2", function (d) {
-              return d.target.y;
-            });
+            .attr("x1", function (d) {return d.source.x;})
+            .attr("y1", function (d) {return d.source.y;})
+            .attr("x2", function (d) {return d.target.x;})
+            .attr("y2", function (d) {return d.target.y;});
 
           node.attr("transform", function (d) {
             return "translate(" + d.x + "," + d.y + ")";
@@ -405,27 +400,6 @@
           document.getElementById("cat").appendChild(node);
           aux = aux + 1;
         });
-      }
-
-      function sinRep(result) {
-        let aux = 0;
-        let result1 = [];
-        result.forEach((element) => {
-          if (result1.length == 0) {
-            result1.push(element);
-          } else if (result1.length > 0) {
-            result1.forEach((el) => {
-              if (el.NomCand == element.NomCand) {
-                aux = 1;
-              }
-            });
-            if (aux != 1) {
-              result1.push(element);
-              aux = 0;
-            }
-          }
-        });
-        return result1;
       }
 
       function isCheck() {
