@@ -96,7 +96,7 @@ var output = document.getElementById("demo");
 // SETTING UP THE FORCE LAYOUT
     
       
-d3.csv("llj2.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
+d3.csv("elecciones_final.csv",function(error,data) {store = data; createNetwork(data);}); //Cargamos nuestro archivo de datos y ejecutamos la función create network
 
 function createNetwork(edgelist) {
   var nodeHash = {};
@@ -195,16 +195,18 @@ var link = svg.selectAll(".link")
           .style("fill", function (d) {
             if (d.cnd === null) {
               return color(d.group);
-            } else if (d.cnd === "lasso") {
+            } else if (d.cnd === "LASSO") {
               return "#CC33CC";
-            } else if (d.cnd === "arauz") {
-              return "	#1C542D";
-            } else if (d.cnd === "perez") {
-              return "	#00BB2D";
-            } else if (d.cnd === "hervas") {
-              return "	#FF8000";
-            } else if (d.cnd === "freile") {
-              return "	#D5303E";
+            } else if (d.cnd === "ARAUZ") {
+              return "#1C542D";
+            } else if (d.cnd === "YAKU") {
+              return "#00BB2D";
+            } else if (d.cnd === "HERVAS") {
+              return "#FF8000";
+            } else if (d.cnd === "FREILE") {
+              return "#FFFF00";
+            } else if (d.cnd === "GUTIERREZ") {
+              return "#FF0000";
             }
           })
           .on("mouseover", tip.show)
@@ -248,7 +250,7 @@ var link = svg.selectAll(".link")
     
 function updateNetwork(){
     d3.select("svg").remove();
-    d3.csv("llj2.csv",function(error,data) {createNetwork(store)});
+    d3.csv("elecciones_final.csv",function(error,data) {createNetwork(store)});
 }
 
 function dataRepetidaCand(elementos, nombre) {

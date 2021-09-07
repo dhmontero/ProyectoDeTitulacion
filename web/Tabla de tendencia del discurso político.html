@@ -78,7 +78,7 @@
         
         function loadData(){
             return Promise.all([
-                d3.csv("llj2.csv")
+                d3.csv("elecciones_final.csv")
             ]).then(datasets => {
                 store.dat = datasets[0];
                 return store;
