@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-    <link rel="stylesheet" href="tabla.css"> 
+    <link rel="stylesheet" href="tabla.css">
+    <link rel="stylesheet" href="comparativa.css">
     <style>
         body {
               font-family:Arial, Helvetica, sans-serif;
@@ -53,23 +54,32 @@
     </style>
 </head
 <body>
-    <h2>COMPARATIVA DE TENDENCIA DEL DISCURSO POLÍTICO</h2>
-    <aside style = "float: left">
-        <div>
-            <div id="cat" ><h3>Categorias</h3></div>
-            <div id="cand" ><h3>Candidatos</h3></div>
-            <div class="slidecontainer">
-                <h3>Indice de similitud</h3>
-                <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
-                <p>SIM: <span id="demo"></span></p>
+    <h2 align= center >COMPARATIVA DE TENDENCIA DEL DISCURSO POLÍTICO</h2>
+    <div style="inline-block">    
+        <aside style = "float: left; display: inline-block" >
+            <div>
+                <div id="cat" ><h3>Categorias</h3></div>
+                <div id="cand" ><h3>Candidatos</h3></div>
+                <div class="slidecontainer">
+                    <h3>Indice de similitud</h3>
+                    <input type="range" min="0" max="1" step="0.005" value="0.5" class="slider" id="myRange" onclick="updateNetwork()">
+                    <p id='sim'>SIM: <span id="demo"></span></p>
+                </div>
+                <div id="cand" >
+                    <h3>Fecha de comparación</h3>
+                    <input type="date" id="start" name="trip-start" value="2021-02-08" min="2020-12-30" max="2021-05-31" onchange="updateNetwork()">
+                </div>
+            </div> 
+        </aside>
+        <div id="main3" class="main3" style="float: left; display: inline-block">
+            <div id="labels" class="labels" style="float: center">
+                <div id='before' style="display: inline-block; width:44%"><p align= center>ANTES</p></div>
+                <div id='date' style="display: inline-block; width:10%"><p id='fecha' align= center>2021-02-08</p></div>
+                <div id='after' style="display: inline-block; width:44%"><p align= center>DESPUÉS</p></div>
+                <div id='main4' style="width:100%"></div>
             </div>
-            <div id="cand" >
-                <h3>Fecha de comparación</h3>
-                <input type="date" id="start" name="trip-start" value="2021-02-08" min="2020-12-30" max="2021-12-31" onchange="updateNetwork()">
-            </div>
-        </div> 
-    </aside>
-    <div id="main3" class="main3" style="float: left">
+        </div>
+    </div>
 <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script>
@@ -122,7 +132,7 @@ function createNetwork(edgelist) {
     return "<strong>Sim:</strong> <span style='color:red'>" +parseFloat(d.weight).toFixed(2)*10+ "%"+ "</span>";
   })
     
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("#main4").append("svg")
     .attr("width", width)
     .attr("height", height);
   
@@ -134,7 +144,6 @@ function createNetwork(edgelist) {
     .distance(100) //separacion nodos principales - nodos de borde
     .charge(-500)  //separación entre nodos de borde
     .size([width, height]); // tamaño del gráfico
-    
     
   obtCand(store);
   obtCat(store);
@@ -231,7 +240,7 @@ var link = svg.selectAll(".link")
     }
     
     edges.forEach(function(edge){
-        edge.source.x = 750;
+        edge.source.x = width/2;
         if(edge.target.date <= fechaInput){
             edge.target.x = edge.target.sim*700+50;
         }else if(edge.target.date > fechaInput){
@@ -249,6 +258,7 @@ var link = svg.selectAll(".link")
 }
     
 function updateNetwork(){
+    updateDateLabel(start.value);
     d3.select("svg").remove();
     d3.csv("elecciones_final.csv",function(error,data) {createNetwork(store)});
 }
@@ -376,8 +386,12 @@ function isCheck(){
     console.log(indexCand);
     updateNetwork();
 }
+
+function updateDateLabel(dateLabel){
+    document.getElementById("fecha").innerHTML = ""
+    var texto = document.createTextNode(dateLabel);
+    document.getElementById('fecha').appendChild(texto);
+}
     
-    
-    </script>
-</div>
+</script>
 </body>
