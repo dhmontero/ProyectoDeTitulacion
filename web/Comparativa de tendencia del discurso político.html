@@ -74,7 +74,7 @@
         <div id="main3" class="main3" style="float: left; display: inline-block">
             <div id="labels" class="labels" style="float: center">
                 <div id='before' style="display: inline-block; width:44%"><p align= center>ANTES</p></div>
-                <div id='date' style="display: inline-block; width:10%"><p id='fecha' align= center>2021-02-08</p></div>
+                <div id='date' style="display: inline-block; width:11%"><p id='fecha' align= center>2021-02-08</p></div>
                 <div id='after' style="display: inline-block; width:44%"><p align= center>DESPUÉS</p></div>
                 <div id='main4' style="width:100%"></div>
             </div>
@@ -240,7 +240,8 @@ var link = svg.selectAll(".link")
     }
     
     edges.forEach(function(edge){
-        edge.source.x = width/2;
+        edge.source.x = 750;
+        nodes.forEach(function(node){if(node.cnd == null){node.x = 750;}})
         if(edge.target.date <= fechaInput){
             edge.target.x = edge.target.sim*700+50;
         }else if(edge.target.date > fechaInput){
