@@ -239,9 +239,10 @@ var link = svg.selectAll(".link")
         k = k + 10;
     }
     
+    nodes.forEach(function(node){if(node.cnd == null){node.x = 750;}})
+      
     edges.forEach(function(edge){
         edge.source.x = 750;
-        nodes.forEach(function(node){if(node.cnd == null){node.x = 750;}})
         if(edge.target.date <= fechaInput){
             edge.target.x = edge.target.sim*700+50;
         }else if(edge.target.date > fechaInput){
